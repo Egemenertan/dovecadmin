@@ -1,0 +1,40 @@
+{
+  "name": "dovecadmin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@tiptap/extension-image": "^2.1.13",
+    "@tiptap/extension-link": "^2.1.13",
+    "@tiptap/extension-placeholder": "^2.1.13",
+    "@tiptap/extension-table": "^2.1.13",
+    "@tiptap/extension-table-cell": "^2.1.13",
+    "@tiptap/extension-table-header": "^2.1.13",
+    "@tiptap/extension-table-row": "^2.1.13",
+    "@tiptap/react": "^2.1.13",
+    "@tiptap/starter-kit": "^2.1.13",
+    "autoprefixer": "^10.4.21",
+    "firebase": "^11.9.1",
+    "lucide-react": "^0.294.0",
+    "next": "15.3.2",
+    "openai": "^4.24.1",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "15.3.2",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}
