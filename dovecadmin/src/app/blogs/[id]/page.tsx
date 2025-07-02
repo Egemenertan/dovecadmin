@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { BlogPost } from '@/types/blog';
 import { getBlogById, incrementViewCount } from '@/lib/blogService';
-import Head from 'next/head';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -233,12 +232,6 @@ export default function BlogDetailPage(props: PageProps) {
           </div>
         </section>
       </article>
-
-      {/* SEO Meta Tags */}
-      <Head>
-        <title>{blog.title}</title>
-        <meta name="description" content={blog.excerpt} />
-      </Head>
     </div>
   );
 } 

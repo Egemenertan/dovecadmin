@@ -16,6 +16,12 @@ export interface Blog extends BlogFormData {
   createdAt: any; // Firebase Timestamp
   updatedAt: number; // Unix timestamp in milliseconds
   oldSlugs: string[];
+  reading_time?: number; // Okuma süresi (dakika)
+  view_count?: number; // Görüntüleme sayısı
+  like_count?: number; // Beğeni sayısı
+  seo_title?: string; // SEO başlık
+  seo_description?: string; // SEO açıklama
+  published_at?: number; // Yayınlanma tarihi
 }
 
 export interface BlogPost {
@@ -33,6 +39,12 @@ export interface BlogPost {
   createdAt: any; // Firebase Timestamp
   updatedAt: number; // Unix timestamp in milliseconds
   oldSlugs: string[];
+  reading_time?: number; // Okuma süresi (dakika)
+  view_count?: number; // Görüntüleme sayısı
+  like_count?: number; // Beğeni sayısı
+  seo_title?: string; // SEO başlık
+  seo_description?: string; // SEO açıklama
+  published_at?: number; // Yayınlanma tarihi
 }
 
 export interface BlogListItem {
