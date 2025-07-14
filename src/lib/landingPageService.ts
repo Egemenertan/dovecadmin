@@ -182,7 +182,11 @@ export const getLandingPageBySlug = async (slug: string): Promise<LandingPage | 
 // Yeni landing page oluştur
 export const createLandingPage = async (lpData: LandingPageFormData): Promise<string> => {
   try {
-    const slug = generateSlug(lpData.name);
+    // Kullanıcının girdiği slug varsa onu kullan, yoksa isimden generate et
+    const slug = lpData.slug && lpData.slug.trim() 
+      ? lpData.slug.trim() 
+      : generateSlug(lpData.name);
+    
     const now = serverTimestamp();
     const nowMillis = Date.now();
     
@@ -213,9 +217,14 @@ export const updateLandingPage = async (id: string, lpData: Partial<LandingPageF
       updatedAt: Date.now()
     };
 
-    // Eğer name değişiyorsa slug'ı da güncelle
-    if (lpData.name) {
-      updateData.slug = generateSlug(lpData.name);
+    // Eğer slug explicitly gönderilmişse onu kullan
+    // Sadece name değişip slug gönderilmemişse, slug'ı name'den generate et
+    if (lpData.slug !== undefined) {
+      // Slug explicitly set edilmiş (boş string dahil)
+      updateData.slug = lpData.slug.trim() || generateSlug(lpData.name || '');
+    } else if (lpData.name && !lpData.slug) {
+      // Sadece name değişmiş, slug dokunulmamış - bu durumda slug'ı güncelleme
+      // Mevcut slug'ı koru
     }
 
     await updateDoc(lpDoc, updateData);
