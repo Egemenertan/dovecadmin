@@ -2,40 +2,40 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { BlogListItem } from '@/types/blog';
-import { subscribeToBlogs, deleteBlog } from '@/lib/blogService';
-import BlogCard from '@/components/BlogCard';
+import { LandingPageListItem } from '@/types/landingPage';
+import { subscribeToLandingPages, deleteLandingPage } from '@/lib/landingPageService';
+import LandingPageCard from '@/components/LandingPageCard';
 
-export default function HomePage() {
-  const [blogs, setBlogs] = useState<BlogListItem[]>([]);
+export default function LandingPageListPage() {
+  const [landingPages, setLandingPages] = useState<LandingPageListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft' | 'archived'>('all');
 
-  // Firebase'den blogları real-time olarak yükle
+  // Firebase'den landing page'leri real-time olarak yükle
   useEffect(() => {
-    console.log('🚀 HomePage: useEffect starting...');
+    console.log('🚀 LandingPageListPage: useEffect starting...');
     let unsubscribe: (() => void) | null = null;
 
     const startListening = () => {
       try {
-        console.log('🔥 HomePage: Starting Firebase listener...');
+        console.log('🔥 LandingPageListPage: Starting Firebase listener...');
         setLoading(true);
         setError(null);
         
         // Real-time listener başlat
-        unsubscribe = subscribeToBlogs((blogsData) => {
-          console.log('📊 HomePage: Received blogs data:', blogsData);
-          console.log('📈 HomePage: Number of blogs:', blogsData.length);
-          setBlogs(blogsData);
+        unsubscribe = subscribeToLandingPages((lpData) => {
+          console.log('📊 LandingPageListPage: Received LP data:', lpData);
+          console.log('📈 LandingPageListPage: Number of LPs:', lpData.length);
+          setLandingPages(lpData);
           setLoading(false);
         });
         
-        console.log('✅ HomePage: Firebase listener started successfully');
+        console.log('✅ LandingPageListPage: Firebase listener started successfully');
       } catch (err) {
-        console.error('❌ HomePage: Error starting listener:', err);
-        setError('Unable to connect to Firebase Firestore. Please check your internet connection.');
+        console.error('❌ LandingPageListPage: Error starting listener:', err);
+        setError('Firebase Firestore bağlantısı kurulamadı. Lütfen internet bağlantınızı kontrol edin.');
         setLoading(false);
       }
     };
@@ -44,49 +44,46 @@ export default function HomePage() {
 
     // Cleanup function
     return () => {
-      console.log('🧹 HomePage: Cleaning up Firebase listener...');
+      console.log('🧹 LandingPageListPage: Cleaning up Firebase listener...');
       if (unsubscribe) {
         unsubscribe();
       }
     };
   }, []);
 
-  // Blog silme işlemi
-  const handleDeleteBlog = async (id: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+  const handleDeleteLP = async (id: string, name: string) => {
+    if (!window.confirm(`"${name}" adlı landing page'i silmek istediğinizden emin misiniz?`)) {
       return;
     }
 
     try {
       setDeleting(id);
-      await deleteBlog(id);
-      // Real-time listener otomatik olarak güncellemeyi yapacak
-    } catch (err) {
-      console.error('Blog deletion error:', err);
-      alert('An error occurred while deleting the blog post');
+      await deleteLandingPage(id);
+      console.log('✅ Landing Page silindi:', id);
+    } catch (error) {
+      console.error('❌ Landing Page silme hatası:', error);
+      alert('Landing Page silinirken bir hata oluştu');
     } finally {
       setDeleting(null);
     }
   };
 
-  // Filter blogs based on status
-  const filteredBlogs = blogs.filter(blog => {
-    if (filter === 'all') return true;
-    return blog.status === filter;
-  });
-
   const getFilterCount = (status: string) => {
-    if (status === 'all') return blogs.length;
-    return blogs.filter(blog => blog.status === status).length;
+    if (status === 'all') return landingPages.length;
+    return landingPages.filter(lp => lp.status === status).length;
   };
+
+  const filteredLPs = filter === 'all' 
+    ? landingPages 
+    : landingPages.filter(lp => lp.status === filter);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <div className="w-8 h-8 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin mx-auto mb-6"></div>
-          <h2 className="text-xl font-light text-slate-700 mb-2">Connecting to Firebase</h2>
-          <p className="text-slate-500 text-sm">Setting up real-time data stream</p>
+        <div className="text-center">
+          <div className="w-16 h-16 bg-slate-200 rounded-full animate-pulse mx-auto mb-6"></div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">Landing Page'ler Yükleniyor...</h2>
+          <p className="text-slate-600">Firebase'den veriler alınıyor</p>
         </div>
       </div>
     );
@@ -99,7 +96,7 @@ export default function HomePage() {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <div className="w-8 h-8 bg-red-500 rounded-full"></div>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-4">Connection Error</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">Bağlantı Hatası</h2>
           <div className="bg-white border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-8">
             {error}
           </div>
@@ -108,13 +105,13 @@ export default function HomePage() {
               onClick={() => window.location.reload()}
               className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
             >
-              Retry Connection
+              Tekrar Dene
             </button>
             <Link
-              href="/blogs/new"
+              href="/landing-pages/new"
               className="text-slate-600 hover:text-slate-900 px-6 py-3 font-medium transition-colors"
             >
-              Create New Post
+              Yeni LP Oluştur
             </Link>
           </div>
         </div>
@@ -132,15 +129,9 @@ export default function HomePage() {
               <Link href="/" className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors">
                 DOVEC
               </Link>
-              <p className="text-slate-600 mt-2 font-light">Modern Blog Management</p>
+              <p className="text-slate-600 mt-2 font-light">Landing Page Yönetimi</p>
             </div>
             <div className="flex items-center space-x-4">
-              <Link
-                href="/landing-pages"
-                className="text-slate-600 hover:text-slate-900 px-6 py-3 font-medium transition-colors"
-              >
-                Landing Pages
-              </Link>
               <Link
                 href="/landing-pages/new"
                 className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2"
@@ -151,10 +142,10 @@ export default function HomePage() {
                 New LP
               </Link>
               <Link
-                href="/blogs/new"
-                className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200"
+                href="/"
+                className="text-slate-600 hover:text-slate-900 px-6 py-3 font-medium transition-colors"
               >
-                New Post
+                Ana Sayfa
               </Link>
             </div>
           </div>
@@ -167,11 +158,11 @@ export default function HomePage() {
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-3">Blog Posts</h1>
-              <p className="text-slate-600 font-light">Manage your content with real-time updates</p>
+              <h1 className="text-4xl font-bold text-slate-900 mb-3">Landing Pages</h1>
+              <p className="text-slate-600 font-light">Dinamik landing page'lerinizi yönetin</p>
             </div>
-            <div className="flex items-center space-x-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm border border-emerald-200">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <div className="flex items-center space-x-2 px-4 py-2 bg-yellow-50 text-yellow-700 rounded-full text-sm border border-yellow-200">
+              <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
               <span className="font-medium">Live</span>
             </div>
           </div>
@@ -179,17 +170,17 @@ export default function HomePage() {
           {/* Filter Tabs */}
           <div className="flex items-center space-x-2 mb-8">
             {[
-              { key: 'all', label: 'All Posts' },
-              { key: 'published', label: 'Published' },
-              { key: 'draft', label: 'Drafts' },
-              { key: 'archived', label: 'Archived' }
+              { key: 'all', label: 'Tüm LP\'ler' },
+              { key: 'published', label: 'Yayınlanmış' },
+              { key: 'draft', label: 'Taslak' },
+              { key: 'archived', label: 'Arşivlenmiş' }
             ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setFilter(tab.key as any)}
                 className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                   filter === tab.key
-                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/25'
+                    ? 'bg-yellow-500 text-white shadow-lg shadow-yellow-500/25'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200'
                 }`}
               >
@@ -204,64 +195,69 @@ export default function HomePage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white border border-slate-200 p-6 rounded-2xl">
-              <div className="text-3xl font-bold text-slate-900 mb-1">{blogs.length}</div>
-              <div className="text-slate-600 font-light">Total Posts</div>
+              <div className="text-3xl font-bold text-slate-900 mb-1">{landingPages.length}</div>
+              <div className="text-slate-600 font-light">Toplam LP</div>
             </div>
             <div className="bg-white border border-slate-200 p-6 rounded-2xl">
               <div className="text-3xl font-bold text-emerald-600 mb-1">{getFilterCount('published')}</div>
-              <div className="text-slate-600 font-light">Published</div>
+              <div className="text-slate-600 font-light">Yayınlanmış</div>
             </div>
             <div className="bg-white border border-slate-200 p-6 rounded-2xl">
               <div className="text-3xl font-bold text-amber-600 mb-1">{getFilterCount('draft')}</div>
-              <div className="text-slate-600 font-light">Drafts</div>
+              <div className="text-slate-600 font-light">Taslak</div>
             </div>
             <div className="bg-white border border-slate-200 p-6 rounded-2xl">
               <div className="text-3xl font-bold text-slate-500 mb-1">{getFilterCount('archived')}</div>
-              <div className="text-slate-600 font-light">Archived</div>
+              <div className="text-slate-600 font-light">Arşivlenmiş</div>
             </div>
           </div>
         </div>
 
-        {/* Blog List */}
-        {filteredBlogs.length > 0 ? (
+        {/* Landing Page List */}
+        {filteredLPs.length > 0 ? (
           <div className="space-y-8">
-            {filteredBlogs.map((blog) => (
-              <BlogCard
-                key={blog.id}
-                blog={blog}
+            {filteredLPs.map((lp) => (
+              <LandingPageCard
+                key={lp.id}
+                landingPage={lp}
                 showActions={true}
-                onDelete={() => handleDeleteBlog(blog.id, blog.title)}
-                isDeleting={deleting === blog.id}
+                onDelete={() => handleDeleteLP(lp.id, lp.name)}
+                isDeleting={deleting === lp.id}
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-8">
-              <div className="w-12 h-12 bg-slate-300 rounded-full"></div>
+            <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-8">
+              <svg className="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-4">
-              {filter === 'all' ? 'No blog posts found' : `No ${filter} posts found`}
+              {filter === 'all' ? 'Henüz landing page bulunamadı' : `${filter} durumunda LP bulunamadı`}
             </h3>
             <p className="text-slate-600 font-light mb-8 max-w-md mx-auto leading-relaxed">
               {filter === 'all' 
-                ? 'Your Firebase Firestore database is empty. Create your first blog post to get started.'
-                : `You don't have any ${filter} posts. Try switching to a different filter or create a new post.`
+                ? 'Firebase Firestore veritabanınızda landing page bulunmuyor. İlk landing page\'inizi oluşturun.'
+                : `${filter} durumunda landing page bulunmuyor. Başka bir filtre seçin veya yeni bir LP oluşturun.`
               }
             </p>
             <div className="space-x-4">
               <Link
-                href="/blogs/new"
-                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-medium transition-all duration-200 inline-block"
+                href="/landing-pages/new"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-4 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2"
               >
-                Create New Post
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Yeni Landing Page Oluştur
               </Link>
               {filter !== 'all' && (
                 <button
                   onClick={() => setFilter('all')}
                   className="text-slate-600 hover:text-slate-900 px-8 py-4 font-medium transition-colors border border-slate-200 rounded-xl hover:border-slate-300"
                 >
-                  Show All Posts
+                  Tüm LP'leri Göster
                 </button>
               )}
             </div>
@@ -269,13 +265,10 @@ export default function HomePage() {
         )}
 
         {/* Footer Status */}
-        <div className="py-16 text-center">
-          <div className="inline-flex items-center space-x-3 px-6 py-3 bg-white border border-slate-200 rounded-full text-sm">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span className="text-slate-600 font-medium">Firebase Firestore Connected</span>
-            <span className="text-slate-400">•</span>
-            <span className="text-slate-600 font-medium">Real-time Updates Active</span>
-          </div>
+        <div className="mt-16 pt-8 border-t border-slate-200 text-center">
+          <p className="text-slate-500 font-light">
+            Toplam {landingPages.length} landing page • Real-time Firebase sync aktif
+          </p>
         </div>
       </main>
     </div>
