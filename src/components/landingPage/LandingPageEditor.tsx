@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { LandingPageFormData } from '@/types/landingPage';
 import LandingPagePreview from './LandingPagePreview';
+import SectionManagementPanel from './SectionManagementPanel';
 
 interface LandingPageEditorProps {
   data: LandingPageFormData;
@@ -13,6 +14,7 @@ interface LandingPageEditorProps {
 export default function LandingPageEditor({ data, onChange, isLoading }: LandingPageEditorProps) {
   const [activeSection, setActiveSection] = useState<string>('basic');
   const [baseUrl, setBaseUrl] = useState('');
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -25,7 +27,7 @@ export default function LandingPageEditor({ data, onChange, isLoading }: Landing
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white relative">
       {/* Top Info Bar */}
       <div className="sticky top-0 z-20 bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
         <div className="flex items-center justify-between">
@@ -41,7 +43,18 @@ export default function LandingPageEditor({ data, onChange, isLoading }: Landing
           </div>
           
           <div className="flex items-center space-x-4">
-        
+            {/* Section Management Toggle */}
+            <button
+              onClick={() => setIsPanelOpen(!isPanelOpen)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isPanelOpen 
+                  ? 'bg-yellow-400 text-black' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              🔧 Section Yönetimi
+            </button>
+            
             <div className="text-sm text-gray-500 bg-yellow-100 px-3 py-1 rounded-full">
               {activeSection ? `Aktif: ${activeSection}` : 'Düzenleme Modu'}
             </div>
@@ -97,6 +110,14 @@ export default function LandingPageEditor({ data, onChange, isLoading }: Landing
           />
         </div>
       </div>
+
+      {/* Section Management Panel */}
+      <SectionManagementPanel
+        data={data}
+        onChange={onChange}
+        isOpen={isPanelOpen}
+        onToggle={() => setIsPanelOpen(!isPanelOpen)}
+      />
     </div>
   );
 } 

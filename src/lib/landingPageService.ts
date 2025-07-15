@@ -458,6 +458,14 @@ export const getDefaultLandingPageData = (): Omit<LandingPageFormData, 'name' | 
     },
     seoTitle: "Kıbrıs'ta TL ile Ev Sahibi Olun - Döveç Group",
     seoDescription: "İstanbul'daki yüksek konut fiyatlarına alternatif! Kıbrıs'ta sabit TL taksitlerle ev sahibi olun. %7 kira getirisi, 30 gün tapu teslim.",
-    tags: ["gayrimenkul", "kıbrıs", "yatırım", "ev", "tapu"]
+    tags: ["gayrimenkul", "kıbrıs", "yatırım", "ev", "tapu"],
+    
+    // Section Management
+    sectionOrder: [
+      'hero', 'stats', 'premium', 'comparison', 'company', 
+      'faq', 'cta', 'familyFeatures', 'education', 'paymentSystem', 'customerStory'
+    ],
+    hiddenSections: [],
+    duplicatedSections: {}
   };
 }; 

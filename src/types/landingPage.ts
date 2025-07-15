@@ -139,6 +139,11 @@ export interface LandingPageFormData {
   paymentSystem: PaymentSystemSection;
   customerStory: CustomerStorySection;
   
+  // Section Management
+  sectionOrder?: string[]; // Sections sıralaması için
+  hiddenSections?: string[]; // Gizlenmiş sections
+  duplicatedSections?: { [key: string]: any[] }; // Duplicate edilmiş sections
+  
   // SEO Fields
   seoTitle?: string;
   seoDescription?: string;
