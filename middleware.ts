@@ -9,8 +9,24 @@ export function middleware(request: NextRequest) {
     url.pathname = '/'
     return NextResponse.redirect(url)
   }
+
+  // Response oluştur
+  const response = NextResponse.next()
   
-  return NextResponse.next()
+  // Güvenlik headers ekle
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+  
+  // Admin paneli için ek güvenlik
+  if (url.pathname.startsWith('/admin') || url.pathname === '/') {
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+  }
+  
+  return response
 }
 
 export const config = {

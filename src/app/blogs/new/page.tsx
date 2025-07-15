@@ -90,21 +90,7 @@ export default function NewBlogPage() {
         )}
 
         {/* Info Banner */}
-        <div className="mb-6 bg-blue-50 border border-blue-200 p-4 rounded-lg">
-          <div className="flex items-start">
-            <div className="text-blue-600 text-xl mr-3">💡</div>
-            <div>
-              <h3 className="font-semibold text-blue-900 mb-1">Modern Blog Editörü</h3>
-              <p className="text-blue-800 text-sm">
-                • Rich text editör ile zengin içerik oluşturun<br/>
-                • Otomatik çeviri ile İngilizce versiyonunu oluşturun<br/>
-                • <strong>5 farklı yöntemle</strong> resim ekleyin (File Upload, URL, Drag&Drop, Paste, İçerik editöründe)<br/>
-                • Tablo ve çoklu boşluk desteği<br/>
-                • <strong>Firebase Firestore</strong> ile güvenli kaydetme
-              </p>
-            </div>
-          </div>
-        </div>
+     
 
         {/* Blog Form */}
         <BlogForm

@@ -92,7 +92,7 @@ const ModernRichTextEditor: React.FC<ModernRichTextEditorProps> = ({
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[300px] max-w-none',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[300px] max-w-none prose-headings:text-slate-900 prose-h1:text-3xl prose-h1:font-bold prose-h1:border-b prose-h1:border-slate-200 prose-h1:pb-2 prose-h2:text-2xl prose-h2:font-semibold prose-h2:text-blue-800 prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:font-medium prose-h3:text-slate-700 prose-h3:mt-6 prose-h3:mb-3',
         style: 'white-space: pre-wrap;',
       },
       handleDrop: (view, event, slice, moved) => {
@@ -216,11 +216,41 @@ const ModernRichTextEditor: React.FC<ModernRichTextEditorProps> = ({
     <div className={`border border-gray-300 rounded-lg overflow-hidden ${className}`}>
       {/* Toolbar */}
       <div className="bg-gray-50 border-b border-gray-300 p-2 flex flex-wrap gap-1">
-        {/* Temel formatting */}
+        {/* Başlıklar - SEO için önemli, önce göster */}
+        <div className="flex items-center gap-1 bg-blue-50 rounded-md p-1 border border-blue-200">
+          <span className="text-xs font-medium text-blue-700 px-1">SEO Başlıklar:</span>
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            isActive={editor.isActive('heading', { level: 2 })}
+            title="Ana Başlık (H2) - SEO için önerilen"
+          >
+            <Heading2 size={16} />
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            isActive={editor.isActive('heading', { level: 3 })}
+            title="Alt Başlık (H3) - İçerik organizasyonu için"
+          >
+            <Heading3 size={16} />
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            isActive={editor.isActive('heading', { level: 1 })}
+            title="Ana Sayfa Başlığı (H1) - Dikkatli kullanın"
+          >
+            <Heading1 size={16} />
+          </ToolbarButton>
+        </div>
+
+        <div className="w-px h-6 bg-gray-300 mx-1"></div>
+
+        {/* Temel formatting - Bold'u daha az belirgin yap */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           isActive={editor.isActive('bold')}
-          title="Kalın (Ctrl+B)"
+          title="⚠️ Kalın Text (Ctrl+B) - Başlık için H2/H3 kullanın!"
         >
           <Bold size={16} />
         </ToolbarButton>
@@ -247,33 +277,6 @@ const ModernRichTextEditor: React.FC<ModernRichTextEditorProps> = ({
           title="Kod"
         >
           <Code size={16} />
-        </ToolbarButton>
-
-        <div className="w-px h-6 bg-gray-300 mx-1"></div>
-
-        {/* Başlıklar */}
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          isActive={editor.isActive('heading', { level: 1 })}
-          title="Başlık 1"
-        >
-          <Heading1 size={16} />
-        </ToolbarButton>
-
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          isActive={editor.isActive('heading', { level: 2 })}
-          title="Başlık 2"
-        >
-          <Heading2 size={16} />
-        </ToolbarButton>
-
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          isActive={editor.isActive('heading', { level: 3 })}
-          title="Başlık 3"
-        >
-          <Heading3 size={16} />
         </ToolbarButton>
 
         <div className="w-px h-6 bg-gray-300 mx-1"></div>
@@ -409,6 +412,9 @@ const ModernRichTextEditor: React.FC<ModernRichTextEditorProps> = ({
           </div>
         </div>
       )}
+
+      {/* SEO Rehberliği */}
+     
     </div>
   );
 };

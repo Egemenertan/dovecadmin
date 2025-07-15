@@ -179,12 +179,21 @@ export default function ImageUploader({ value, onChange, className = '' }: Image
   React.useEffect(() => {
     if (value) {
       console.log('🔄 Resim yükleme başlatıldı:', value);
-      setImageLoading(true);
       setImageError(false);
       
-      // Timeout ekle - 10 saniye sonra loading'i durdur
+      // Base64 resimler için timeout gerekmez - anında yüklenir
+      if (value.startsWith('data:')) {
+        console.log('✅ Base64 resim - anında yüklendi:', value.substring(0, 50) + '...');
+        setImageLoading(false);
+        return;
+      }
+      
+      // Sadece URL resimler için loading state ve timeout kullan
+      setImageLoading(true);
+      
+      // URL resimler için timeout ekle - 10 saniye sonra loading'i durdur
       const timeout = setTimeout(() => {
-        console.log('⏰ Resim yükleme timeout:', value);
+        console.log('⏰ URL resim yükleme timeout:', value);
         setImageLoading(false);
         setImageError(true);
       }, 10000);
@@ -218,8 +227,10 @@ export default function ImageUploader({ value, onChange, className = '' }: Image
                 className={`w-full h-48 object-cover transition-opacity duration-300 ${
                   imageLoading ? 'opacity-0' : 'opacity-100'
                 }`}
-                onLoad={handleImageLoad}
-                onError={handleImageError}
+                {...(!value.startsWith('data:') && {
+                  onLoad: handleImageLoad,
+                  onError: handleImageError
+                })}
               />
             ) : (
               <div className="w-full h-48 bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">

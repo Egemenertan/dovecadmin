@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { AuthProvider } from '@/contexts/AuthContext'
+import AuthGuard from '@/components/AuthGuard'
 
 export const metadata: Metadata = {
   title: 'Dovec Admin - Blog Management System',
@@ -17,9 +19,13 @@ export default function RootLayout({
         <link rel="stylesheet" href="/test.css" />
       </head>
       <body className="bg-gray-50 min-h-screen">
-        <div className="min-h-screen">
-          {children}
-        </div>
+        <AuthProvider>
+          <AuthGuard>
+            <div className="min-h-screen">
+              {children}
+            </div>
+          </AuthGuard>
+        </AuthProvider>
       </body>
     </html>
   )
