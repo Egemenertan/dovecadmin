@@ -216,7 +216,7 @@ export const createBlog = async (blogData: BlogFormData): Promise<string> => {
     const now = serverTimestamp();
     const nowMillis = Date.now();
     
-    const newBlog = {
+    const newBlog: any = {
       title: blogData.title,
       en_title: blogData.en_title,
       excerpt: blogData.excerpt,
@@ -224,13 +224,20 @@ export const createBlog = async (blogData: BlogFormData): Promise<string> => {
       content: blogData.content,
       en_content: blogData.en_content,
       tags: blogData.tags,
-      status: blogData.status,
       coverImage: blogData.coverImage,
       slug,
       createdAt: now,
       updatedAt: nowMillis,
       oldSlugs: []
     };
+
+    // Status yönetimi: Taslak seçilirse status alanı eklenmez (boş), yayında seçilirse 'published' değeri eklenir
+    if (blogData.status === 'published') {
+      newBlog.status = 'published';
+    } else if (blogData.status === 'archived') {
+      newBlog.status = 'archived';
+    }
+    // draft seçilirse status alanı eklenmez (undefined kalır)
 
     const docRef = await addDoc(collection(db, BLOGS_COLLECTION), newBlog);
     console.log('✅ Blog Firebase\'e kaydedildi, ID:', docRef.id);
