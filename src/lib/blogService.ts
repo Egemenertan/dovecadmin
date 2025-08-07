@@ -231,13 +231,13 @@ export const createBlog = async (blogData: BlogFormData): Promise<string> => {
       oldSlugs: []
     };
 
-    // Status yönetimi: Taslak seçilirse status alanı eklenmez (boş), yayında seçilirse 'published' değeri eklenir
+    // Status yönetimi: Yayında seçilirse 'published', diğer tüm statuslar 'hidden' olarak gönderilir
     if (blogData.status === 'published') {
       newBlog.status = 'published';
-    } else if (blogData.status === 'archived') {
-      newBlog.status = 'archived';
+    } else {
+      // draft ve archived dahil diğer tüm statuslar hidden olarak gönderilir
+      newBlog.status = 'hidden';
     }
-    // draft seçilirse status alanı eklenmez (undefined kalır)
 
     const docRef = await addDoc(collection(db, BLOGS_COLLECTION), newBlog);
     console.log('✅ Blog Firebase\'e kaydedildi, ID:', docRef.id);
@@ -260,6 +260,16 @@ export const updateBlog = async (id: string, blogData: Partial<BlogFormData>): P
     // Eğer title değişiyorsa slug'ı da güncelle
     if (blogData.title) {
       updateData.slug = generateSlug(blogData.title);
+    }
+
+    // Status yönetimi: Yayında seçilirse 'published', diğer tüm statuslar 'hidden' olarak gönderilir
+    if (blogData.status !== undefined) {
+      if (blogData.status === 'published') {
+        updateData.status = 'published';
+      } else {
+        // draft ve archived dahil diğer tüm statuslar hidden olarak gönderilir
+        updateData.status = 'hidden';
+      }
     }
 
     await updateDoc(blogDoc, updateData);
