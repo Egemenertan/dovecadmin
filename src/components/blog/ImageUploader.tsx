@@ -21,11 +21,45 @@ export default function ImageUploader({ value, onChange, className = '' }: Image
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
 
-  // Base64'e çevirme fonksiyonu
-  const convertToBase64 = useCallback((file: File): Promise<string> => {
+  // Resim sıkıştırma ve Base64'e çevirme fonksiyonu
+  const compressAndConvertToBase64 = useCallback((file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
+      const img = new Image();
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
+
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Maksimum boyutları belirle
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 675;
+
+          // En-boy oranını koru
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          // Sıkıştırılmış base64
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+          resolve(compressedBase64);
+        };
+        img.onerror = reject;
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
@@ -64,9 +98,9 @@ export default function ImageUploader({ value, onChange, className = '' }: Image
       setUploading(true);
       setError(null);
 
-      // Base64'e çevir
-      const base64String = await convertToBase64(file);
-      onChange(base64String);
+      // Resmi sıkıştır ve base64'e çevir
+      const compressedBase64 = await compressAndConvertToBase64(file);
+      onChange(compressedBase64);
       
       console.log('✅ Resim başarıyla yüklendi');
     } catch (err) {
@@ -75,7 +109,7 @@ export default function ImageUploader({ value, onChange, className = '' }: Image
     } finally {
       setUploading(false);
     }
-  }, [validateFile, convertToBase64, onChange]);
+  }, [validateFile, compressAndConvertToBase64, onChange]);
 
   // File input değişimi
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

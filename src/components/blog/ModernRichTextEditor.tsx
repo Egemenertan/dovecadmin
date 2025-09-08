@@ -108,9 +108,24 @@ const ModernRichTextEditor: React.FC<ModernRichTextEditorProps> = ({
         }
         return false;
       },
-      handlePaste: (view, event, slice) => {
+      handlePaste: (view, event) => {
         const items = event.clipboardData?.items;
         if (items) {
+          // Önce metin içeriği kontrol et
+          let hasText = false;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type === 'text/plain' || items[i].type === 'text/html') {
+              hasText = true;
+              break;
+            }
+          }
+
+          // Eğer metin varsa, varsayılan yapıştırma davranışını kullan
+          if (hasText) {
+            return false;
+          }
+
+          // Sadece resim varsa resmi işle
           for (let i = 0; i < items.length; i++) {
             if (items[i].type.indexOf('image') !== -1) {
               event.preventDefault();
