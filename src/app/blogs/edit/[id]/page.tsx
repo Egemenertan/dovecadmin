@@ -38,10 +38,13 @@ export default function EditBlogPage(props: PageProps) {
         setBlogData({
           title: data.title,
           en_title: data.en_title,
+          pl_title: data.pl_title || '',
           excerpt: data.excerpt,
           en_excerpt: data.en_excerpt,
+          pl_excerpt: data.pl_excerpt || '',
           content: data.content,
           en_content: data.en_content,
+          pl_content: data.pl_content || '',
           tags: data.tags || [],
           status: data.status,
           coverImage: data.coverImage || ''

@@ -20,10 +20,13 @@ const BlogForm: React.FC<BlogFormProps> = ({
   const [formData, setFormData] = useState<BlogFormData>({
     title: initialData?.title || '',
     en_title: initialData?.en_title || '',
+    pl_title: initialData?.pl_title || '',
     excerpt: initialData?.excerpt || '',
     en_excerpt: initialData?.en_excerpt || '',
+    pl_excerpt: initialData?.pl_excerpt || '',
     content: initialData?.content || '',
     en_content: initialData?.en_content || '',
+    pl_content: initialData?.pl_content || '',
     tags: initialData?.tags || [],
     status: initialData?.status || 'draft',
     coverImage: initialData?.coverImage || ''
@@ -126,8 +129,8 @@ const BlogForm: React.FC<BlogFormProps> = ({
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Title and English Title */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Title: Turkish, English, Polish */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-3">
               Başlık (Türkçe) *
@@ -155,10 +158,23 @@ const BlogForm: React.FC<BlogFormProps> = ({
               placeholder="English title..."
             />
           </div>
+          <div>
+            <label htmlFor="pl_title" className="block text-sm font-medium text-slate-700 mb-3">
+              Tytuł (Polski)
+            </label>
+            <input
+              type="text"
+              id="pl_title"
+              value={formData.pl_title}
+              onChange={(e) => handleInputChange('pl_title', e.target.value)}
+              className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all"
+              placeholder="Polski tytuł..."
+            />
+          </div>
         </div>
 
-        {/* Excerpt and English Excerpt */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Excerpt: Turkish, English, Polish */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
             <label htmlFor="excerpt" className="block text-sm font-medium text-slate-700 mb-3">
               Özet (Türkçe) *
@@ -186,10 +202,23 @@ const BlogForm: React.FC<BlogFormProps> = ({
               placeholder="English excerpt..."
             />
           </div>
+          <div>
+            <label htmlFor="pl_excerpt" className="block text-sm font-medium text-slate-700 mb-3">
+              Streszczenie (Polski)
+            </label>
+            <textarea
+              id="pl_excerpt"
+              value={formData.pl_excerpt}
+              onChange={(e) => handleInputChange('pl_excerpt', e.target.value)}
+              rows={4}
+              className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all resize-none"
+              placeholder="Polski streszczenie..."
+            />
+          </div>
         </div>
 
-        {/* Content and English Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Content: Turkish, English, Polish */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
             <label htmlFor="content" className="block text-sm font-medium text-slate-700 mb-3">
               İçerik (Türkçe) *
@@ -209,6 +238,17 @@ const BlogForm: React.FC<BlogFormProps> = ({
               value={formData.en_content}
               onChange={(value) => handleInputChange('en_content', value)}
               placeholder="English content..."
+              className="min-h-[400px] rounded-xl border-slate-200"
+            />
+          </div>
+          <div>
+            <label htmlFor="pl_content" className="block text-sm font-medium text-slate-700 mb-3">
+              Treść (Polski)
+            </label>
+            <ModernRichTextEditor
+              value={formData.pl_content}
+              onChange={(value) => handleInputChange('pl_content', value)}
+              placeholder="Polski treść..."
               className="min-h-[400px] rounded-xl border-slate-200"
             />
           </div>

@@ -1,10 +1,13 @@
 export interface BlogFormData {
   title: string;
   en_title: string;
+  pl_title: string;
   excerpt: string;
   en_excerpt: string;
+  pl_excerpt: string;
   content: string;
   en_content: string;
+  pl_content: string;
   tags: string[];
   status: 'draft' | 'published' | 'archived';
   coverImage: string;
@@ -29,10 +32,13 @@ export interface BlogPost {
   slug: string;
   title: string;
   en_title: string;
+  pl_title: string;
   excerpt: string;
   en_excerpt: string;
+  pl_excerpt: string;
   content: string;
   en_content: string;
+  pl_content: string;
   tags: string[];
   status: 'draft' | 'published' | 'archived';
   coverImage: string;
@@ -52,8 +58,10 @@ export interface BlogListItem {
   slug: string;
   title: string;
   en_title: string;
+  pl_title: string;
   excerpt: string;
   en_excerpt: string;
+  pl_excerpt: string;
   status: 'draft' | 'published' | 'archived';
   coverImage: string;
   createdAt: any; // Firebase Timestamp

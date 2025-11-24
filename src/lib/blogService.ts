@@ -219,10 +219,13 @@ export const createBlog = async (blogData: BlogFormData): Promise<string> => {
     const newBlog: any = {
       title: blogData.title,
       en_title: blogData.en_title,
+      pl_title: blogData.pl_title,
       excerpt: blogData.excerpt,
       en_excerpt: blogData.en_excerpt,
+      pl_excerpt: blogData.pl_excerpt,
       content: blogData.content,
       en_content: blogData.en_content,
+      pl_content: blogData.pl_content,
       tags: blogData.tags,
       coverImage: blogData.coverImage,
       slug,
